@@ -29,7 +29,7 @@ exports.initialize = function(pathsObj) {
 exports.readListOfUrls = function(callback) {
   var urls = [];
   return fs.readFile(exports.paths.list, (err, data) => {
-    urls = data.toString('utf8').split(/\r?\n/);
+    urls = data.toString('utf8').split(/\r?\n/).filter(str => str.length > 0);
     callback(urls);
   });
 };
@@ -44,7 +44,8 @@ exports.addUrlToList = function(url, callback) {
   exports.readListOfUrls(function(urls) {
     if (urls.indexOf(url) === -1) {
       urls.push(url);
-      fs.writeFile(exports.paths.list, urls.join('\n').trim() + '\n', (err) => {
+      console.log(url);
+      fs.writeFile(exports.paths.list, urls.join('\n') + '\n', (err) => {
         callback();
       });
     } else {
