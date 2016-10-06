@@ -44,7 +44,7 @@ exports.addUrlToList = function(url, callback) {
   exports.readListOfUrls(function(urls) {
     if (urls.indexOf(url) === -1) {
       urls.push(url);
-      fs.writeFile(exports.paths.list, urls.join('\n'), (err) => {
+      fs.writeFile(exports.paths.list, urls.join('\n').trim() + '\n', (err) => {
         callback();
       });
     } else {
@@ -64,19 +64,16 @@ exports.isUrlArchived = function(url, callback) {
 };
 
 exports.downloadUrls = function(urlArray) {
-  // var list;
-  // exports.readListOfUrls(function(data) {
-  //   list = data;
-  // });
-  for (var url of urlArray) {
-    exports.isUrlArchived(url, function(isArchived) {
+  if (urlArray.length >= 1) {
+    exports.isUrlArchived(urlArray[0], function(isArchived) {
       if (!isArchived) {
         request({
-          url: 'http://' + url
+          url: 'http://' + urlArray[0]
         }, (err, response, body) => {
-          fs.writeFile(exports.paths.archivedSites + '/' + url, body);
+          fs.writeFile(exports.paths.archivedSites + '/' + urlArray[0], body);
         });
       }
     });
+    exports.downloadUrls(urlArray.slice(1));
   }
 };
