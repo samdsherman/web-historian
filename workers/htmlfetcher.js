@@ -5,6 +5,6 @@
 // * * * * * /usr/local/bin/node /Users/student/Desktop/2016-09-web-historian/workers/htmlfetcher.js
 var archive = require('../helpers/archive-helpers');
 
-archive.readListOfUrls(function(urls) {
+archive.readListOfUrls().then((urls) => {
   archive.downloadUrls(urls);
 });
